@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,7 @@ import com.spring.box.database.DatabaseController;
 import com.spring.box.helpers.Helpers;
 import com.spring.box.models.Film;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @RestController
 public class RequestHandler {
 
@@ -33,7 +34,7 @@ public class RequestHandler {
 	
 	@PostMapping(value="/films/add", consumes="application/json", produces="application/json")
 	public Map<String,String> insertFilm(@RequestBody Film film){
-		Map response = new HashMap();
+		Map<String,String> response = new HashMap();
 		if(ctrl.addFilm(film)) {
 			response.put("code", "success");
 			response.put("message", "Film has been inserted successfully");
@@ -53,4 +54,20 @@ public class RequestHandler {
 		response.put("poster", poster);
 		return response;
 	}
+	
+	@GetMapping("films/delete/{film_title}")
+	public Map<String,String> deleteFilm(@PathVariable("film_title") String title){
+		System.out.println("Title: " + title);
+		Map<String,String> response = new HashMap();
+		if(ctrl.deleteFilm(title)) {
+			response.put("code", "success");
+			response.put("message", title + " was deleted successfully.");
+		}else {
+			response.put("code", "fail");
+			response.put("message", "error occured when deleting " + title);
+		}
+		return response;
+	}
+	
+	
 }

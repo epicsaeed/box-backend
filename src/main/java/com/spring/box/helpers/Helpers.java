@@ -1,5 +1,8 @@
 package com.spring.box.helpers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,5 +37,28 @@ public class Helpers {
 			
 		}catch( Exception e) { e.printStackTrace(); }
 		return poster_path; 
+	}
+	
+	//returns film details
+	public Map<String,String> getFilmDetails(String title){
+		Map<String,String> response = new HashMap();
+		String url = "https://api.themoviedb.org/3/search/movie";
+		
+		try{
+			HttpResponse <JsonNode> jsonResponse = Unirest.get(url)
+					.queryString("api_key","61be1c6ff66df6779bc88faf76a3fcd6")
+					.queryString("query", title)
+					.asJson();
+			String jsonString = jsonResponse.getBody().toString();
+			JSONObject obj = new JSONObject(jsonString);
+			JSONArray arr = obj.getJSONArray("results");
+			try {
+				String film_title = arr.getJSONObject(0).getString("title");
+				String film_release_date = arr.getJSONObject(0).getString("release_date");
+			}catch( JSONException e) { e.printStackTrace(); }
+					
+		}catch( Exception e) { e.printStackTrace(); }
+		
+		return response;
 	}
 }
